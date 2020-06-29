@@ -135,10 +135,11 @@ class Pemesanan extends CI_Controller
         $data['pemesanan']  = $this->WisataModel->getPemesananuser();
         foreach ($data['pemesanan'] as $value) :
             $qr_code = $value['qr_code'];
+            $nama    = $value['nama_member'];
         endforeach;
         $this->load->view('user/cetak_invoice', $data);
-        $qrCode = new Endroid\QrCode\QrCode($qr_code);
-        $qrCode->writeFile('assets/qr_code/' . $qr_code . '.png');
+        $qrCode = new Endroid\QrCode\QrCode($qr_code . '-' . $nama);
+        $qrCode->writeFile('assets/qr_code/' . $qr_code . '-' . $nama . '.png');
         $html   = $this->output->get_output();
         $this->load->library('dompdf_gen');
         $paper_size      = "A5";
@@ -152,7 +153,13 @@ class Pemesanan extends CI_Controller
     function cetak_bukti($id)
     {
         $data['pemesanan']  = $this->WisataModel->getPemesananuser();
+        foreach ($data['pemesanan'] as $value) :
+            $qr_code = $value['qr_code'];
+            $nama    = $value['nama_member'];
+        endforeach;
         $this->load->view('user/cetak_bukti', $data);
+        $qrCode = new Endroid\QrCode\QrCode($qr_code . '-' . $nama);
+        $qrCode->writeFile('assets/qr_code/' . $qr_code . '-' . $nama . '.png');
         $html   = $this->output->get_output();
         $this->load->library('dompdf_gen');
         $paper_size      = "A5";
@@ -166,7 +173,15 @@ class Pemesanan extends CI_Controller
     function cetak_tiket($id)
     {
         $data['pemesanan']  = $this->WisataModel->getPemesananuser();
+        foreach ($data['pemesanan'] as $value) :
+            $qr_code = $value['qr_code'];
+            $nama    = $value['nama_member'];
+        endforeach;
+        $this->load->view('user/cetak_invoice', $data);
         $this->load->view('user/tiket', $data);
+        $qrCode = new Endroid\QrCode\QrCode($qr_code . '-' . $nama);
+        $qrCode->writeFile('assets/qr_code/' . $qr_code . '-' . $nama . '.png');
+
         $html   = $this->output->get_output();
         $this->load->library('dompdf_gen');
         $paper_size      = "A5";
@@ -332,6 +347,8 @@ class Pemesanan extends CI_Controller
         check_admin();
         $data['title']      = 'Detail Pemesanan Selesai';
         $data['admin']      = $this->db->get_where('admin', ['id' => $this->session->userdata('id')])->row_array();
+        $data['pesanan']    = $this->WisataModel->getPemesananData();
+        $data['wisata']     = $this->WisataModel->getAllWisata();
         $data['pemesanan']  = $this->WisataModel->getPemesananData();
         $this->load->view('admin/detail_pemesanan', $data);
     }

@@ -130,10 +130,21 @@ class WisataModel extends CI_Model
     // ambil seluruh data pemesanan
     function getPemesananData()
     {
-        $this->db->select('pemesanan.*, wisata.nama as nama_wisata, wisata.jenis_wisata, wisata.harga, member.email ,member.nama as nama_member');
+        $this->db->select('pemesanan.*, wisata.nama as nama_wisata, wisata.id as id_wis, wisata.jenis_wisata, wisata.harga, member.email ,member.gender, member.telepon, member.nama as nama_member');
         $this->db->from('pemesanan');
         $this->db->join('wisata', 'wisata.id=pemesanan.id_wisata', 'LEFT');
         $this->db->join('member', 'member.id=pemesanan.id_member', 'LEFT');
+        $result = $this->db->get();
+        return $result->result_array();
+    }
+
+    function getPemesananPerWisata($id)
+    {
+        $this->db->select('pemesanan.*, wisata.nama as nama_wisata, wisata.id as id_wis, wisata.jenis_wisata, wisata.harga, member.email ,member.gender, member.telepon, member.nama as nama_member');
+        $this->db->from('pemesanan');
+        $this->db->join('wisata', 'wisata.id=pemesanan.id_wisata', 'LEFT');
+        $this->db->join('member', 'member.id=pemesanan.id_member', 'LEFT');
+        $this->db->where('id_wisata', $id);
         $result = $this->db->get();
         return $result->result_array();
     }
@@ -180,6 +191,17 @@ class WisataModel extends CI_Model
         $this->db->from('ulasan');
         $this->db->join('wisata', 'wisata.id=ulasan.id_wisata', 'LEFT');
         $this->db->join('member', 'member.id=ulasan.id_member', 'LEFT');
+        $result = $this->db->get();
+        return $result->result_array();
+    }
+
+    function getUlasanWisata($id)
+    {
+        $this->db->select('ulasan.*, wisata.nama as nama_wisata, member.nama as nama_member');
+        $this->db->from('ulasan');
+        $this->db->join('wisata', 'wisata.id=ulasan.id_wisata', 'LEFT');
+        $this->db->join('member', 'member.id=ulasan.id_member', 'LEFT');
+        $this->db->where('id_wisata', $id);
         $result = $this->db->get();
         return $result->result_array();
     }

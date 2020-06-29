@@ -144,6 +144,5 @@ class Auth extends CI_Controller
         $this->load->view('user/member/header', $data);
         $this->load->view('user/member/profile', $data);
         $this->load->view('user/member/footer');
-        
     }
 }

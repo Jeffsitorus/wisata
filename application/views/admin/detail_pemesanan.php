@@ -1,3 +1,10 @@
+<?php
+$pesanwisata = $this->WisataModel->getPemesananData();
+foreach ($pesanwisata as $pesan) :
+    $id_wisata = $pesan['id_wisata'];
+endforeach;
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -25,6 +32,23 @@
                 </div>
                 <div class="page-inner">
                     <a href="<?= site_url('admin/cetak_laporan_pemesanan') ?>" target="_blank" class="btn btn-danger mb-2"><i class="fas fa-print"></i> Cetak Pdf</a>
+                    <?php if ($this->uri->segment(2) == 'detail_pemesanan_wisata') : ?>
+                        <a href="<?= site_url('admin/export_excel_wisata/' . $this->uri->segment(3)) ?>" class="btn btn-success mb-2"><i class="fas fa-file-export"></i> Export Excel</a>
+                    <?php else : ?>
+                        <a href="<?= site_url('admin/export_excel') ?>" class="btn btn-success mb-2"><i class="fas fa-file-export"></i> Export Excel</a>
+                    <?php endif; ?>
+                    <div class="dropdown d-inline">
+                        <button class="btn btn-success mb-2 dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Dropdown Daftar Wisata
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <?php foreach ($wisata as $w) : ?>
+                                <a class="dropdown-item" href="<?= site_url('admin/detail_pemesanan_wisata/' . $w['id']); ?>">
+                                    <?= $w['nama']; ?>
+                                </a>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
                     <a href="<?= site_url('pemesanan/detail_pemesanan') ?>" class="btn btn-light mb-2"><i class="fa fa-history"></i></a>
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover table-head-bg-primary" id="table1">
@@ -90,7 +114,7 @@
                     "className": "text-left"
                 },
                 {
-                    "targets": [-1,4],
+                    "targets": [-1, 4],
                     "className": "text-center"
                 }
             ]

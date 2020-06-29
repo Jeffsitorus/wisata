@@ -1,6 +1,6 @@
-<?php if(!defined('BASEPATH')) exit ('No direct script access allowed');
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-class AuthModel extends CI_Model 
+class AuthModel extends CI_Model
 {
 
     private $_table = 'admin';
@@ -8,6 +8,12 @@ class AuthModel extends CI_Model
     public function check_user($username)
     {
         $result = $this->db->get_where($this->_table, ['username' => $username]);
+        return $result->row_array();
+    }
+
+    public function check_wisata($email)
+    {
+        $result = $this->db->get_where('wisata', ['email' => $email]);
         return $result->row_array();
     }
 

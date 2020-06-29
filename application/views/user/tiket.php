@@ -11,16 +11,16 @@
 
         table {
             border-collapse: collapse;
-            border: 1px solid #000;
+            border: 1px solid #f1f1f1;
             font-family: 'Arial', sans-serif;
             font-size: 12px;
-            width: 70%;
+            width: 100%;
         }
 
         table tr,
         th,
         td {
-            border: 1px solid #000;
+            border: 1px solid #f1f1f1;
             padding: 10px;
         }
 
@@ -37,29 +37,36 @@
     <h3>Tiket Wisata</h3>
     <h4>Kabupaten Purwakarta Telp.081282441221</h4>
     <?php foreach ($pemesanan as $value) : ?>
-        <?php endforeach; ?>
+    <?php endforeach; ?>
 
-     <table border="0">
-            <tr>
-                <th>Nama</th>
-                <td>:</td>
-                <td><?= $value['nama_member']; ?></td>
-            </tr>
-            <tr>
-                <th>Wisata</th>
-                <td>:</td>
-                <td><?= $value['nama_wisata']; ?></td>
-            </tr>
-            <tr>
-                <th>Jumlah Tiket</th>
-                <td>:</td>
-                <td><?= $value['lama']; ?> Tiket</td>
-            </tr>
-            <tr>
-                <th>Pembayaran</th>
-                <td>:</td>
-                <td><b>LUNAS</b></td>
-            </tr>
+    <table border="0">
+        <tr style="border: none;">
+            <td>QR CODE</td>
+            <td>:</td>
+            <td style="border: none; text-align: center;">
+                <img src="assets/qr_code/<?= $value['qr_code'] . '-' . $value['nama_member']; ?>.png" width="200">
+            </td>
+        </tr>
+        <tr>
+            <th>Nama</th>
+            <td>:</td>
+            <td><?= $value['nama_member']; ?></td>
+        </tr>
+        <tr>
+            <th>Wisata</th>
+            <td>:</td>
+            <td><?= $value['nama_wisata']; ?></td>
+        </tr>
+        <tr>
+            <th>Jumlah Tiket</th>
+            <td>:</td>
+            <td><?= $value['lama']; ?> Tiket</td>
+        </tr>
+        <tr>
+            <th>Pembayaran</th>
+            <td>:</td>
+            <td><b>LUNAS</b></td>
+        </tr>
 
     </table>
 </body></html>

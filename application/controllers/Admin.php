@@ -128,7 +128,7 @@ class Admin extends CI_Controller
         $this->session->set_flashdata('success', 'Data keluhan berhasil dihapus!');
         redirect('admin/komplain', 'refresh');
     }
-    
+
     function post_hapus($id)
     {
         $row    = ['id_info' => $id];
@@ -259,10 +259,10 @@ class Admin extends CI_Controller
         $data['admin']  = $this->db->get_where('admin', ['id' => $this->session->userdata('id')])->row_array();
         $this->db->select('*');
         $this->db->from('informasi');
-        $this->db->join('admin','admin.id = informasi.admin_id');
+        $this->db->join('admin', 'admin.id = informasi.admin_id');
         $data['post'] = $this->db->get()->row_array();
         $this->load->view('admin/tambah_post', $data);
-    // } else {
+        // } else {
         if (!empty($_FILES['gambar']['name'])) {
             $config['upload_path']      = './assets/upload/blog/cover';
             $config['allowed_types']    = 'jpg|jpeg|png|svg';
@@ -289,13 +289,13 @@ class Admin extends CI_Controller
                     'tanggal_post' => date('Ymd'),
                     'jam_post'     => date('H:i:s a'),
                 ];
-                $this->db->insert('informasi',$data);
+                $this->db->insert('informasi', $data);
                 $this->session->set_flashdata('success', 'Data Informasi berhasil ditambahkan!');
                 redirect('admin/informasi', 'refresh');
             }
-        } 
+        }
     }
-    
+
     function edit_post($id)
     {
         date_default_timezone_set('Asia/Jakarta');
@@ -303,11 +303,11 @@ class Admin extends CI_Controller
         $data['admin']  = $this->db->get_where('admin', ['id' => $this->session->userdata('id')])->row_array();
         $this->db->select('*');
         $this->db->from('informasi');
-        $this->db->join('admin','admin.id = informasi.admin_id');
-        $this->db->where('id_info',$id);
+        $this->db->join('admin', 'admin.id = informasi.admin_id');
+        $this->db->where('id_info', $id);
         $data['post'] = $this->db->get()->row_array();
         $this->load->view('admin/edit_post', $data);
-    // } else {
+        // } else {
         if (!empty($_FILES['gambar']['name'])) {
             $config['upload_path']      = './assets/upload/blog/cover';
             $config['allowed_types']    = 'jpg|jpeg|png|svg';
@@ -335,18 +335,146 @@ class Admin extends CI_Controller
                     'jam_post'     => date('H:i:s a'),
                 ];
                 $row    = ['id_info' => $id];
-                $this->WisataModel->editPost($row,$data);
+                $this->WisataModel->editPost($row, $data);
                 $this->session->set_flashdata('success', 'Data Informasi berhasil ditambahkan!');
                 redirect('admin/informasi', 'refresh');
             }
-        } 
+        }
     }
 
+    function export_excel()
+    {
+        require(APPPATH . 'third_party/PHPExcel-1.8/Classes/PHPExcel.php');
+        require(APPPATH . 'third_party/PHPExcel-1.8/Classes/PHPExcel/Writer/Excel2007.php');
+        $object = new PHPExcel();
+        $object->getProperties()->setCreator("Admin Siparwa");
+        $object->getProperties()->setLastModifiedBy("Admin Siparwa");
+        $object->getProperties()->setTitle("Data Pemesanan Tiket");
+        $object->setActiveSheetIndex(0);
+
+        $object->getActiveSheet()->getColumnDimension('A')->setWidth('5');
+        $object->getActiveSheet()->getColumnDimension('B')->setWidth('25');
+        $object->getActiveSheet()->getColumnDimension('C')->setWidth('18');
+        $object->getActiveSheet()->getColumnDimension('D')->setWidth('30');
+        $object->getActiveSheet()->getColumnDimension('E')->setWidth('15');
+        $object->getActiveSheet()->getColumnDimension('F')->setWidth('15');
+        $object->getActiveSheet()->getColumnDimension('G')->setWidth('35');
+        $object->getActiveSheet()->getColumnDimension('H')->setWidth('15');
+        $object->getActiveSheet()->getColumnDimension('I')->setWidth('10');
+        $object->getActiveSheet()->getColumnDimension('J')->setWidth('20');
+
+        $object->getActiveSheet()->setCellValue('A1', 'No');
+        $object->getActiveSheet()->setCellValue('B1', 'Nama Pemesan');
+        $object->getActiveSheet()->setCellValue('C1', 'Jenis Kelamin');
+        $object->getActiveSheet()->setCellValue('D1', 'Email');
+        $object->getActiveSheet()->setCellValue('E1', 'No Telepon');
+        $object->getActiveSheet()->setCellValue('F1', 'Kode QR');
+        $object->getActiveSheet()->setCellValue('G1', 'Nama Wisata');
+        $object->getActiveSheet()->setCellValue('H1', 'Harga Tiket');
+        $object->getActiveSheet()->setCellValue('I1', 'Jumlah');
+        $object->getActiveSheet()->setCellValue('J1', 'Total Bayar');
+        $data['pemesanan']  = $this->WisataModel->getPemesananData();
+        $baris  = 2;
+        $no     = 1;
+        foreach ($data['pemesanan'] as $pm) {
+            // $total = $data['pemesanan']['harga'] * $data['pemesanan']['lama'];
+            $object->getActiveSheet()->setCellValue('A' . $baris, $no++);
+            $object->getActiveSheet()->setCellValue('B' . $baris, $pm['nama_member']);
+            $object->getActiveSheet()->setCellValue('C' . $baris, $pm['gender']);
+            $object->getActiveSheet()->setCellValue('D' . $baris, $pm['email']);
+            $object->getActiveSheet()->setCellValue('E' . $baris, $pm['telepon']);
+            $object->getActiveSheet()->setCellValue('F' . $baris, $pm['qr_code']);
+            $object->getActiveSheet()->setCellValue('G' . $baris, $pm['nama_wisata']);
+            $object->getActiveSheet()->setCellValue('H' . $baris, $pm['harga']);
+            $object->getActiveSheet()->setCellValue('I' . $baris, $pm['lama']);
+            $object->getActiveSheet()->setCellValue('J' . $baris, $pm['harga'] * $pm['lama']);
+            $baris++;
+        }
+        $fileName = "Data Pemesanan Wisata" . '.xlsx';
+        $object->getActiveSheet()->setTitle("Data Pemesanan Wisata");
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $fileName . '"');
+        header('Cache-Control: max-age=0');
+        $writer = PHPExcel_IOFactory::createWriter($object, 'Excel2007');
+        $writer->save('php://output');
+        exit;
+    }
 
     // func untuk logout
     function logout()
     {
         $this->session->sess_destroy();
         redirect('login/admin', 'refresh');
+    }
+
+    function detail_pemesanan_wisata($id)
+    {
+        check_admin();
+        $data['title']      = 'Detail Pemesanan Selesai';
+        $data['admin']      = $this->db->get_where('admin', ['id' => $this->session->userdata('id')])->row_array();
+        $data['wisata']     = $this->WisataModel->getAllWisata();
+        $data['pesanan']  = $this->WisataModel->getPemesananData();
+        $data['pemesanan']  = $this->WisataModel->getPemesananPerWisata($id);
+        $this->load->view('admin/detail_pemesanan', $data);
+    }
+
+
+
+    function export_excel_wisata($id)
+    {
+        require(APPPATH . 'third_party/PHPExcel-1.8/Classes/PHPExcel.php');
+        require(APPPATH . 'third_party/PHPExcel-1.8/Classes/PHPExcel/Writer/Excel2007.php');
+        $object = new PHPExcel();
+        $object->getProperties()->setCreator("Admin Siparwa");
+        $object->getProperties()->setLastModifiedBy("Admin Siparwa");
+        $object->getProperties()->setTitle("Data Pemesanan Tiket");
+        $object->setActiveSheetIndex(0);
+
+        $object->getActiveSheet()->getColumnDimension('A')->setWidth('5');
+        $object->getActiveSheet()->getColumnDimension('B')->setWidth('25');
+        $object->getActiveSheet()->getColumnDimension('C')->setWidth('18');
+        $object->getActiveSheet()->getColumnDimension('D')->setWidth('30');
+        $object->getActiveSheet()->getColumnDimension('E')->setWidth('15');
+        $object->getActiveSheet()->getColumnDimension('F')->setWidth('15');
+        $object->getActiveSheet()->getColumnDimension('G')->setWidth('35');
+        $object->getActiveSheet()->getColumnDimension('H')->setWidth('15');
+        $object->getActiveSheet()->getColumnDimension('I')->setWidth('10');
+        $object->getActiveSheet()->getColumnDimension('J')->setWidth('20');
+
+        $object->getActiveSheet()->setCellValue('A1', 'No');
+        $object->getActiveSheet()->setCellValue('B1', 'Nama Pemesan');
+        $object->getActiveSheet()->setCellValue('C1', 'Jenis Kelamin');
+        $object->getActiveSheet()->setCellValue('D1', 'Email');
+        $object->getActiveSheet()->setCellValue('E1', 'No Telepon');
+        $object->getActiveSheet()->setCellValue('F1', 'Kode QR');
+        $object->getActiveSheet()->setCellValue('G1', 'Nama Wisata');
+        $object->getActiveSheet()->setCellValue('H1', 'Harga Tiket');
+        $object->getActiveSheet()->setCellValue('I1', 'Jumlah');
+        $object->getActiveSheet()->setCellValue('J1', 'Total Bayar');
+        $data['pemesanan']  = $this->WisataModel->getPemesananPerWisata($id);
+        $baris  = 2;
+        $no     = 1;
+        foreach ($data['pemesanan'] as $pm) {
+            // $total = $data['pemesanan']['harga'] * $data['pemesanan']['lama'];
+            $object->getActiveSheet()->setCellValue('A' . $baris, $no++);
+            $object->getActiveSheet()->setCellValue('B' . $baris, $pm['nama_member']);
+            $object->getActiveSheet()->setCellValue('C' . $baris, $pm['gender']);
+            $object->getActiveSheet()->setCellValue('D' . $baris, $pm['email']);
+            $object->getActiveSheet()->setCellValue('E' . $baris, $pm['telepon']);
+            $object->getActiveSheet()->setCellValue('F' . $baris, $pm['qr_code']);
+            $object->getActiveSheet()->setCellValue('G' . $baris, $pm['nama_wisata']);
+            $object->getActiveSheet()->setCellValue('H' . $baris, $pm['harga']);
+            $object->getActiveSheet()->setCellValue('I' . $baris, $pm['lama']);
+            $object->getActiveSheet()->setCellValue('J' . $baris, $pm['harga'] * $pm['lama']);
+            $baris++;
+        }
+        $fileName = "Data Pemesanan Wisata" . '.xlsx';
+        $object->getActiveSheet()->setTitle("Data Pemesanan Wisata");
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $fileName . '"');
+        header('Cache-Control: max-age=0');
+        $writer = PHPExcel_IOFactory::createWriter($object, 'Excel2007');
+        $writer->save('php://output');
+        exit;
     }
 }

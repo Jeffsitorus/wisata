@@ -3,8 +3,7 @@
     <a href="#" class="logo">
         <img src="<?= base_url(); ?>assets/img/logo/pwk2.png" alt="navbar brand" class="navbar-brand">
     </a>
-    <button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse" data-target="collapse"
-        aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse" data-target="collapse" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon">
             <i class="icon-menu"></i>
         </span>

@@ -43,7 +43,7 @@
                 <td>QR CODE</td>
                 <td>:</td>
                 <td style="border: none; text-align: center;">
-                    <img src="assets/qr_code/<?= $value['qr_code']; ?>.png" width="200">
+                    <img src="assets/qr_code/<?= $value['qr_code'] . '-'. $value['nama_member']; ?>.png" width="200">
                 </td>
             </tr>
             <tr>
