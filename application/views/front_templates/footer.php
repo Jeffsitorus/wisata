@@ -54,7 +54,7 @@
                             <li><a href="#">Home</a></li>
                             <li><a href="#">About</a></li>
                             <li><a href="#">Wisata</a></li>
-                             <li><a href="#">Informasi</a></li>
+                            <li><a href="#">Informasi</a></li>
                             <li><a href="#"> Contact</a></li>
                         </ul>
                     </div>
@@ -65,7 +65,7 @@
                             Popular destination
                         </h3>
                         <ul class="links double_links">
-                             <li><a href="#">Purwakarta</a></li>
+                            <li><a href="#">Purwakarta</a></li>
                             <li><a href="#">Wanayasa</a></li>
                             <li><a href="#">Pasawahan</a></li>
                             <li><a href="#">Cibatu</a></li>
